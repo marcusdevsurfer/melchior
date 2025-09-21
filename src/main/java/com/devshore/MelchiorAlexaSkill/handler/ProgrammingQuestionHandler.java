@@ -39,16 +39,24 @@ public class ProgrammingQuestionHandler implements RequestHandler {
             System.out.println("Available slots: " + intentRequest.getIntent().getSlots().keySet());
             
             // Intentar con "question" primero
-            if (intentRequest.getIntent().getSlots().get("question") != null &&
-                intentRequest.getIntent().getSlots().get("question").getValue() != null) {
-                userQuery = intentRequest.getIntent().getSlots().get("question").getValue();
-                System.out.println("Found question slot: " + userQuery);
+            if (intentRequest.getIntent().getSlots().get("question") != null) {
+                String questionValue = intentRequest.getIntent().getSlots().get("question").getValue();
+                if (questionValue != null && !questionValue.trim().isEmpty()) {
+                    userQuery = questionValue;
+                    System.out.println("Found question slot: " + userQuery);
+                } else {
+                    System.out.println("Question slot exists but value is null/empty");
+                }
             }
             // Si no, intentar con "query"
-            else if (intentRequest.getIntent().getSlots().get("query") != null &&
-                     intentRequest.getIntent().getSlots().get("query").getValue() != null) {
-                userQuery = intentRequest.getIntent().getSlots().get("query").getValue();
-                System.out.println("Found query slot: " + userQuery);
+            else if (intentRequest.getIntent().getSlots().get("query") != null) {
+                String queryValue = intentRequest.getIntent().getSlots().get("query").getValue();
+                if (queryValue != null && !queryValue.trim().isEmpty()) {
+                    userQuery = queryValue;
+                    System.out.println("Found query slot: " + userQuery);
+                } else {
+                    System.out.println("Query slot exists but value is null/empty");
+                }
             }
             else {
                 System.out.println("No valid slot found, using default: " + userQuery);
