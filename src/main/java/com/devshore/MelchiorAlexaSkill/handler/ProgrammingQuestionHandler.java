@@ -21,13 +21,13 @@ public class ProgrammingQuestionHandler implements RequestHandler {
 
     @Override
     public boolean canHandle(HandlerInput input) {
-        return input.matches(Predicates.intentName("ProgrammingQuestionIntent"));
+        return input.matches(Predicates.intentName("ProgrammingQuestionIntent")) ||
+               input.matches(Predicates.intentName("AMAZON.HelpIntent"));
     }
 
     @Override
     public Optional<Response> handle(HandlerInput input) {
         IntentRequest intentRequest = (IntentRequest) input.getRequestEnvelope().getRequest();
-
         // Obtener la pregunta del usuario de forma segura
         String userQuery = "ayuda con programación"; // Valor por defecto
 
