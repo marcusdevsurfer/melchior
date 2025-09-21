@@ -27,8 +27,17 @@ public class ProgrammingQuestionHandler implements RequestHandler {
     @Override
     public Optional<Response> handle(HandlerInput input) {
         IntentRequest intentRequest = (IntentRequest) input.getRequestEnvelope().getRequest();
-        String userQuery = intentRequest.getIntent().getSlots().get("query").getValue();
-        String prompt = "Eres Melchior, el asistente de programación personal de Mark. Tu personalidad es la de un experto senior en desarrollo de software con más de 15 años de experiencia. Siempre te refieres a Mark por su nombre cuando le hablas directamente y en cada respuesta.\n\n" +
+
+        // Obtener la pregunta del usuario de forma segura
+        String userQuery = "ayuda con programación"; // Valor por defecto
+
+        if (intentRequest.getIntent().getSlots() != null &&
+                intentRequest.getIntent().getSlots().get("query") != null &&
+                intentRequest.getIntent().getSlots().get("query").getValue() != null) {
+            userQuery = intentRequest.getIntent().getSlots().get("query").getValue();
+        }
+        String prompt = "Eres Melchior, el asistente de programación personal de Mark. Tu personalidad es la de un experto senior en desarrollo de software con más de 15 años de experiencia. Siempre te refieres a Mark por su nombre cuando le hablas directamente y en cada respuesta.\n\n"
+                +
                 "PERFIL PROFESIONAL:\n" +
                 "- Especialista en múltiples lenguajes: Java, Python, JavaScript, TypeScript, C#, Go, Rust\n" +
                 "- Experto en frameworks: Spring Boot, React, Angular, Vue.js, Django, Flask, .NET Core\n" +
@@ -52,10 +61,12 @@ public class ProgrammingQuestionHandler implements RequestHandler {
                 "- Para código complejo, ofrece enviarlo por otro medio\n" +
                 "- Da ejemplos conceptuales en lugar de código real\n\n" +
                 "EJEMPLOS DE RESPUESTAS CORRECTAS:\n" +
-                "- 'Mark, para crear una API REST necesitas un controlador con RestController, un método con PostMapping, y usar RequestBody para recibir datos JSON'\n" +
-                "- 'Mark, el problema requiere crear una clase Service con inyección de dependencias y manejar excepciones con try-catch'\n" +
+                "- 'Mark, para crear una API REST necesitas un controlador con RestController, un método con PostMapping, y usar RequestBody para recibir datos JSON'\n"
+                +
+                "- 'Mark, el problema requiere crear una clase Service con inyección de dependencias y manejar excepciones con try-catch'\n"
+                +
                 "- 'Mark, para autenticación JWT necesitas configurar Spring Security, crear un filtro personalizado y un servicio de tokens. ¿Quieres que te envíe el código completo por email?'";
-                
+
         String aiResponse = chatClient.prompt()
                 .system(prompt)
                 .user(userQuery).call().content();
