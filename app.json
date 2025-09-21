@@ -1,0 +1,28 @@
+{
+  "name": "Melchior Alexa Skill",
+  "description": "AI-powered programming assistant for Alexa",
+  "repository": "https://github.com/tu-usuario/MelchiorAlexaSkill",
+  "logo": "https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/amazon.svg",
+  "keywords": ["alexa", "skill", "programming", "ai", "spring-boot"],
+  "env": {
+    "SPRING_AI_OPENAI_API_KEY": {
+      "description": "key",
+      "required": true
+    },
+    "ALEXA_SKILL_ID": {
+      "description": "key",
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/java"
+    }
+  ]
+}
