@@ -31,11 +31,31 @@ public class ProgrammingQuestionHandler implements RequestHandler {
         // Obtener la pregunta del usuario de forma segura
         String userQuery = "ayuda con programación"; // Valor por defecto
 
-        if (intentRequest.getIntent().getSlots() != null &&
-                intentRequest.getIntent().getSlots().get("query") != null &&
-                intentRequest.getIntent().getSlots().get("query").getValue() != null) {
-            userQuery = intentRequest.getIntent().getSlots().get("query").getValue();
+        // Debug: Imprimir información del intent
+        System.out.println("=== DEBUG ProgrammingQuestionHandler ===");
+        System.out.println("Intent slots: " + intentRequest.getIntent().getSlots());
+        
+        if (intentRequest.getIntent().getSlots() != null) {
+            System.out.println("Available slots: " + intentRequest.getIntent().getSlots().keySet());
+            
+            // Intentar con "question" primero
+            if (intentRequest.getIntent().getSlots().get("question") != null &&
+                intentRequest.getIntent().getSlots().get("question").getValue() != null) {
+                userQuery = intentRequest.getIntent().getSlots().get("question").getValue();
+                System.out.println("Found question slot: " + userQuery);
+            }
+            // Si no, intentar con "query"
+            else if (intentRequest.getIntent().getSlots().get("query") != null &&
+                     intentRequest.getIntent().getSlots().get("query").getValue() != null) {
+                userQuery = intentRequest.getIntent().getSlots().get("query").getValue();
+                System.out.println("Found query slot: " + userQuery);
+            }
+            else {
+                System.out.println("No valid slot found, using default: " + userQuery);
+            }
         }
+        System.out.println("Final userQuery: " + userQuery);
+        System.out.println("=== END DEBUG ===");
         String prompt = "Eres Melchior, el asistente de programación personal de Mark. Tu personalidad es la de un experto senior en desarrollo de software con más de 15 años de experiencia. Siempre te refieres a Mark por su nombre cuando le hablas directamente y en cada respuesta.\n\n"
                 +
                 "PERFIL PROFESIONAL:\n" +
