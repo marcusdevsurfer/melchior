@@ -29,10 +29,28 @@ public class ProgrammingQuestionHandler implements RequestHandler {
         IntentRequest intentRequest = (IntentRequest) input.getRequestEnvelope().getRequest();
         // Obtener la pregunta del usuario de forma segura
         String userQuery = "ayuda con programación"; // Valor por defecto
+        
+        // Si no hay slots, usar el nombre del intent como pregunta
+        if (intentRequest.getIntent().getSlots() == null || intentRequest.getIntent().getSlots().isEmpty()) {
+            userQuery = "pregunta general de programación";
+            System.out.println("No slots found, using general programming question");
+        }
 
         // Debug: Imprimir información del intent
         System.out.println("=== DEBUG ProgrammingQuestionHandler ===");
+        System.out.println("Intent name: " + intentRequest.getIntent().getName());
         System.out.println("Intent slots: " + intentRequest.getIntent().getSlots());
+        System.out.println("Intent confirmation status: " + intentRequest.getIntent().getConfirmationStatus());
+        
+        // Verificar si hay slots
+        if (intentRequest.getIntent().getSlots() != null) {
+            System.out.println("Available slots: " + intentRequest.getIntent().getSlots().keySet());
+            for (String slotName : intentRequest.getIntent().getSlots().keySet()) {
+                System.out.println("Slot " + slotName + ": " + intentRequest.getIntent().getSlots().get(slotName).getValue());
+            }
+        } else {
+            System.out.println("No slots found");
+        }
 
         if (intentRequest.getIntent().getSlots() != null) {
             if (intentRequest.getIntent().getSlots().get("query") != null) {
