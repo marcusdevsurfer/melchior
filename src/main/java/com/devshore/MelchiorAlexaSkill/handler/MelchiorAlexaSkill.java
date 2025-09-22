@@ -14,6 +14,7 @@ public class MelchiorAlexaSkill implements RequestHandler {
 
     private final LaunchRequestHandler launchRequestHandler;
     private final ProgrammingQuestionHandler programmingQuestionHandler;
+    private final FallbackIntentHandler fallbackIntentHandler;
     private final SessionEndedRequestHandler sessionEndedRequestHandler;
     private final CancelAndStopIntentHandler cancelAndStopIntentHandler;
     private final HelpIntentHandler helpIntentHandler;
@@ -22,11 +23,13 @@ public class MelchiorAlexaSkill implements RequestHandler {
     public MelchiorAlexaSkill(
             LaunchRequestHandler launchRequestHandler,
             ProgrammingQuestionHandler programmingQuestionHandler,
+            FallbackIntentHandler fallbackIntentHandler,
             SessionEndedRequestHandler sessionEndedRequestHandler,
             CancelAndStopIntentHandler cancelAndStopIntentHandler,
             HelpIntentHandler helpIntentHandler) {
         this.launchRequestHandler = launchRequestHandler;
         this.programmingQuestionHandler = programmingQuestionHandler;
+        this.fallbackIntentHandler = fallbackIntentHandler;
         this.sessionEndedRequestHandler = sessionEndedRequestHandler;
         this.cancelAndStopIntentHandler = cancelAndStopIntentHandler;
         this.helpIntentHandler = helpIntentHandler;
@@ -43,6 +46,8 @@ public class MelchiorAlexaSkill implements RequestHandler {
             return launchRequestHandler.handle(input);
         } else if (programmingQuestionHandler.canHandle(input)) {
             return programmingQuestionHandler.handle(input);
+        } else if (fallbackIntentHandler.canHandle(input)) {
+            return fallbackIntentHandler.handle(input);
         } else if (sessionEndedRequestHandler.canHandle(input)) {
             return sessionEndedRequestHandler.handle(input);
         } else if (cancelAndStopIntentHandler.canHandle(input)) {
