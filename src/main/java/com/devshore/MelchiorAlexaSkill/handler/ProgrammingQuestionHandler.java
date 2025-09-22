@@ -59,7 +59,7 @@ public class ProgrammingQuestionHandler implements RequestHandler {
                     userQuery = queryValue;
                     System.out.println("Found question slot: " + queryValue);
                 } else {
-                    System.out.println("Question slot exists but value is null/empty");
+                    System.out.println("Question slot exists but value is null/empt");
                 }
             } else {
                 System.out.println("No valid slot found, using default: ");
