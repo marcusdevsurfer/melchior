@@ -21,10 +21,10 @@ public class LaunchRequestHandler implements RequestHandler {
 
     @Override
     public Optional<Response> handle(HandlerInput input) {
-        String speechText = "Hola, soy Melchor, tu asistente para dudas de programación. ¿En qué puedo ayudarte?";
+        String speechText = "Hola, soy Gaspar, tu asistente para dudas de programación. ¿En qué puedo ayudarte?";
         return input.getResponseBuilder()
                 .withSpeech(speechText)
-                .withSimpleCard("Melchor", speechText)
+                .withSimpleCard("Gaspar", speechText)
                 .withReprompt("¿Tienes alguna pregunta de programación?")
                 .build();
     }

@@ -19,7 +19,7 @@ public class HelpIntentHandler implements RequestHandler {
 
     @Override
     public Optional<Response> handle(HandlerInput input) {
-        String speechText = "Puedes hacerme preguntas sobre cualquier tema de programación. Por ejemplo, puedes decir, 'explícame qué es una variable en Java'.";
+        String speechText = "Puedes hacerme preguntas sobre cualquier tema de programación. Por ejemplo, puedes decir, 'necesito ayuda con qué es una variable en Java'.";
         return input.getResponseBuilder()
                 .withSpeech(speechText)
                 .withSimpleCard("Eva Ayuda", speechText)
