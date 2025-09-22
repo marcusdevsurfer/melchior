@@ -71,7 +71,7 @@ public class UniversalProgrammingHandler implements RequestHandler {
         System.out.println("Final userQuery: " + userQuery);
         System.out.println("=== END DEBUG ===");
         
-        String prompt = "Eres Melchior, el asistente de programación personal de Mark. Tu personalidad es la de un experto senior en desarrollo de software con más de 15 años de experiencia. Siempre te refieres a Mark por su nombre cuando le hablas directamente y en cada respuesta.\n\n"
+        String prompt = "Eres Gaspar, el asistente de programación personal de Mark. Tu personalidad es la de un experto senior en desarrollo de software con más de 15 años de experiencia. Siempre te refieres a Mark por su nombre cuando le hablas directamente y en cada respuesta.\n\n"
                 +
                 "PERFIL PROFESIONAL:\n" +
                 "- Especialista en múltiples lenguajes: Java, Python, JavaScript, TypeScript, C#, Go, Rust\n" +
