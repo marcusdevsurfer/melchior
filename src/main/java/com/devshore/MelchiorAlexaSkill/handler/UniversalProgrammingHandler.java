@@ -12,71 +12,64 @@ import com.amazon.ask.model.Response;
 import com.amazon.ask.request.Predicates;
 
 @Component
-public class ProgrammingQuestionHandler implements RequestHandler {
+public class UniversalProgrammingHandler implements RequestHandler {
     private final ChatClient chatClient;
 
-    public ProgrammingQuestionHandler(ChatClient.Builder chatClient) {
+    public UniversalProgrammingHandler(ChatClient.Builder chatClient) {
         this.chatClient = chatClient.build();
     }
 
     @Override
     public boolean canHandle(HandlerInput input) {
-        // Solo manejar QuestionIntent si tiene slots válidos
-        if (input.matches(Predicates.intentName("QuestionIntent"))) {
-            IntentRequest intentRequest = (IntentRequest) input.getRequestEnvelope().getRequest();
-            if (intentRequest.getIntent().getSlots() != null && 
-                intentRequest.getIntent().getSlots().get("query") != null &&
-                intentRequest.getIntent().getSlots().get("query").getValue() != null &&
-                !intentRequest.getIntent().getSlots().get("query").getValue().trim().isEmpty()) {
-                return true;
-            }
-        }
-        return false;
+        // Manejar cualquier intent que no sea Launch, Help, Cancel, Stop, SessionEnded
+        return input.matches(Predicates.intentName("QuestionIntent")) ||
+               input.matches(Predicates.intentName("AMAZON.FallbackIntent")) ||
+               (input.matches(Predicates.requestType(IntentRequest.class)) && 
+                !input.matches(Predicates.intentName("AMAZON.HelpIntent")) &&
+                !input.matches(Predicates.intentName("AMAZON.CancelIntent")) &&
+                !input.matches(Predicates.intentName("AMAZON.StopIntent")));
     }
 
     @Override
     public Optional<Response> handle(HandlerInput input) {
         IntentRequest intentRequest = (IntentRequest) input.getRequestEnvelope().getRequest();
-        // Obtener la pregunta del usuario de forma segura
+        
+        // Obtener la pregunta del usuario
         String userQuery = "ayuda con programación"; // Valor por defecto
         
-        // Si no hay slots, usar el nombre del intent como pregunta
-        if (intentRequest.getIntent().getSlots() == null || intentRequest.getIntent().getSlots().isEmpty()) {
-            userQuery = "pregunta general de programación";
-            System.out.println("No slots found, using general programming question");
-        }
-
-        // Debug: Imprimir información del intent
-        System.out.println("=== DEBUG ProgrammingQuestionHandler ===");
+        // Debug: Imprimir información
+        System.out.println("=== DEBUG UniversalProgrammingHandler ===");
         System.out.println("Intent name: " + intentRequest.getIntent().getName());
         System.out.println("Intent slots: " + intentRequest.getIntent().getSlots());
-        System.out.println("Intent confirmation status: " + intentRequest.getIntent().getConfirmationStatus());
         
-        // Verificar si hay slots
+        // Intentar obtener la pregunta de diferentes fuentes
         if (intentRequest.getIntent().getSlots() != null) {
             System.out.println("Available slots: " + intentRequest.getIntent().getSlots().keySet());
-            for (String slotName : intentRequest.getIntent().getSlots().keySet()) {
-                System.out.println("Slot " + slotName + ": " + intentRequest.getIntent().getSlots().get(slotName).getValue());
-            }
-        } else {
-            System.out.println("No slots found");
-        }
-
-        if (intentRequest.getIntent().getSlots() != null) {
-            if (intentRequest.getIntent().getSlots().get("query") != null) {
-                String queryValue = intentRequest.getIntent().getSlots().get("query").getValue();
-                if (queryValue != null && !queryValue.trim().isEmpty()) {
-                    userQuery = queryValue;
-                    System.out.println("Found question slot: " + queryValue);
-                } else {
-                    System.out.println("Question slot exists but value is null/empt");
+            
+            // Buscar en diferentes posibles nombres de slots
+            String[] possibleSlotNames = {"query", "question", "text", "input"};
+            for (String slotName : possibleSlotNames) {
+                if (intentRequest.getIntent().getSlots().get(slotName) != null) {
+                    String slotValue = intentRequest.getIntent().getSlots().get(slotName).getValue();
+                    if (slotValue != null && !slotValue.trim().isEmpty()) {
+                        userQuery = slotValue;
+                        System.out.println("Found " + slotName + " slot: " + userQuery);
+                        break;
+                    }
                 }
-            } else {
-                System.out.println("No valid slot found, using default: ");
+            }
+        }
+        
+        // Si no encontramos slots, usar el nombre del intent como pista
+        if (userQuery.equals("ayuda con programación")) {
+            String intentName = intentRequest.getIntent().getName();
+            if (!intentName.equals("AMAZON.FallbackIntent")) {
+                userQuery = "pregunta sobre " + intentName.toLowerCase();
             }
         }
         
         System.out.println("Final userQuery: " + userQuery);
+        System.out.println("=== END DEBUG ===");
         
         String prompt = "Eres Melchior, el asistente de programación personal de Mark. Tu personalidad es la de un experto senior en desarrollo de software con más de 15 años de experiencia. Siempre te refieres a Mark por su nombre cuando le hablas directamente y en cada respuesta.\n\n"
                 +
@@ -103,19 +96,17 @@ public class ProgrammingQuestionHandler implements RequestHandler {
                 "- Para código complejo, ofrece enviarlo por otro medio\n" +
                 "- Da ejemplos conceptuales en lugar de código real\n\n" +
                 "EJEMPLOS DE RESPUESTAS CORRECTAS:\n" +
-                "- 'Mark, para crear una API REST necesitas un controlador con RestController, un método con PostMapping, y usar RequestBody para recibir datos JSON'\n"
-                +
-                "- 'Mark, el problema requiere crear una clase Service con inyección de dependencias y manejar excepciones con try-catch'\n"
-                +
+                "- 'Mark, para crear una API REST necesitas un controlador con RestController, un método con PostMapping, y usar RequestBody para recibir datos JSON'\n" +
+                "- 'Mark, el problema requiere crear una clase Service con inyección de dependencias y manejar excepciones con try-catch'\n" +
                 "- 'Mark, para autenticación JWT necesitas configurar Spring Security, crear un filtro personalizado y un servicio de tokens. ¿Quieres que te envíe el código completo por email?'";
 
         String aiResponse = chatClient.prompt()
                 .system(prompt)
                 .user(userQuery).call().content();
 
-         return input.getResponseBuilder()
+        return input.getResponseBuilder()
                 .withSpeech(aiResponse)
-                //.withSimpleCard("Melchor contesta", "Melchor is working")
+                .withSimpleCard("Melchior contesta", aiResponse)
                 .build();
     }
 }

@@ -13,8 +13,7 @@ import com.amazon.ask.model.Response;
 public class MelchiorAlexaSkill implements RequestHandler {
 
     private final LaunchRequestHandler launchRequestHandler;
-    private final ProgrammingQuestionHandler programmingQuestionHandler;
-    private final FallbackIntentHandler fallbackIntentHandler;
+    private final UniversalProgrammingHandler universalProgrammingHandler;
     private final SessionEndedRequestHandler sessionEndedRequestHandler;
     private final CancelAndStopIntentHandler cancelAndStopIntentHandler;
     private final HelpIntentHandler helpIntentHandler;
@@ -22,14 +21,12 @@ public class MelchiorAlexaSkill implements RequestHandler {
     @Autowired
     public MelchiorAlexaSkill(
             LaunchRequestHandler launchRequestHandler,
-            ProgrammingQuestionHandler programmingQuestionHandler,
-            FallbackIntentHandler fallbackIntentHandler,
+            UniversalProgrammingHandler universalProgrammingHandler,
             SessionEndedRequestHandler sessionEndedRequestHandler,
             CancelAndStopIntentHandler cancelAndStopIntentHandler,
             HelpIntentHandler helpIntentHandler) {
         this.launchRequestHandler = launchRequestHandler;
-        this.programmingQuestionHandler = programmingQuestionHandler;
-        this.fallbackIntentHandler = fallbackIntentHandler;
+        this.universalProgrammingHandler = universalProgrammingHandler;
         this.sessionEndedRequestHandler = sessionEndedRequestHandler;
         this.cancelAndStopIntentHandler = cancelAndStopIntentHandler;
         this.helpIntentHandler = helpIntentHandler;
@@ -44,16 +41,14 @@ public class MelchiorAlexaSkill implements RequestHandler {
     public Optional<Response> handle(HandlerInput input) {
         if (launchRequestHandler.canHandle(input)) {
             return launchRequestHandler.handle(input);
-        } else if (programmingQuestionHandler.canHandle(input)) {
-            return programmingQuestionHandler.handle(input);
-        } else if (fallbackIntentHandler.canHandle(input)) {
-            return fallbackIntentHandler.handle(input);
         } else if (sessionEndedRequestHandler.canHandle(input)) {
             return sessionEndedRequestHandler.handle(input);
         } else if (cancelAndStopIntentHandler.canHandle(input)) {
             return cancelAndStopIntentHandler.handle(input);
         } else if (helpIntentHandler.canHandle(input)) {
             return helpIntentHandler.handle(input);
+        } else if (universalProgrammingHandler.canHandle(input)) {
+            return universalProgrammingHandler.handle(input);
         }
         return Optional.empty();
     }
