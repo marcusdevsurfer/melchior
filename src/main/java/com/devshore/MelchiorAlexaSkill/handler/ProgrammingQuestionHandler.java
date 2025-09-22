@@ -28,7 +28,7 @@ public class ProgrammingQuestionHandler implements RequestHandler {
     public Optional<Response> handle(HandlerInput input) {
         IntentRequest intentRequest = (IntentRequest) input.getRequestEnvelope().getRequest();
         // Obtener la pregunta del usuario de forma segura
-        //String userQuery = "ayuda con programación"; // Valor por defecto
+        String userQuery = "ayuda con programación"; // Valor por defecto
 
         // Debug: Imprimir información del intent
         System.out.println("=== DEBUG ProgrammingQuestionHandler ===");
@@ -38,6 +38,7 @@ public class ProgrammingQuestionHandler implements RequestHandler {
             if (intentRequest.getIntent().getSlots().get("query") != null) {
                 String queryValue = intentRequest.getIntent().getSlots().get("query").getValue();
                 if (queryValue != null && !queryValue.trim().isEmpty()) {
+                    userQuery = queryValue;
                     System.out.println("Found question slot: " + queryValue);
                 } else {
                     System.out.println("Question slot exists but value is null/empty");
@@ -46,9 +47,8 @@ public class ProgrammingQuestionHandler implements RequestHandler {
                 System.out.println("No valid slot found, using default: ");
             }
         }
-
         
-        //System.out.println("Final userQuery: " + userQuery);
+        System.out.println("Final userQuery: " + userQuery);
         
         String prompt = "Eres Melchior, el asistente de programación personal de Mark. Tu personalidad es la de un experto senior en desarrollo de software con más de 15 años de experiencia. Siempre te refieres a Mark por su nombre cuando le hablas directamente y en cada respuesta.\n\n"
                 +
@@ -81,19 +81,13 @@ public class ProgrammingQuestionHandler implements RequestHandler {
                 +
                 "- 'Mark, para autenticación JWT necesitas configurar Spring Security, crear un filtro personalizado y un servicio de tokens. ¿Quieres que te envíe el código completo por email?'";
 
-        // String aiResponse = chatClient.prompt()
-        //         .system(prompt)
-        //         .user(userQuery).call().content();
-
-        // return input.getResponseBuilder()
-        //         .withSpeech(aiResponse)
-        //         .withSimpleCard("Melchor contesta", aiResponse)
-        //         .build();
+        String aiResponse = chatClient.prompt()
+                .system(prompt)
+                .user(userQuery).call().content();
 
          return input.getResponseBuilder()
-                .withSpeech("Melchor escuchando")
-                .withSimpleCard("Melchor contesta", "Melchor is working")
+                .withSpeech(aiResponse)
+                //.withSimpleCard("Melchor contesta", "Melchor is working")
                 .build();
     }
-
 }
