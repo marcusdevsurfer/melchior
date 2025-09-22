@@ -21,8 +21,7 @@ public class ProgrammingQuestionHandler implements RequestHandler {
 
     @Override
     public boolean canHandle(HandlerInput input) {
-        return input.matches(Predicates.intentName("ProgrammingQuestionIntent")) ||
-               input.matches(Predicates.intentName("AMAZON.HelpIntent"));
+        return input.matches(Predicates.intentName("ProgrammingQuestionIntent"));
     }
 
     @Override
@@ -34,10 +33,11 @@ public class ProgrammingQuestionHandler implements RequestHandler {
         // Debug: Imprimir información del intent
         System.out.println("=== DEBUG ProgrammingQuestionHandler ===");
         System.out.println("Intent slots: " + intentRequest.getIntent().getSlots());
-        
+
         if (intentRequest.getIntent().getSlots() != null) {
-            System.out.println("Available slots: " + intentRequest.getIntent().getSlots().keySet());
-            
+            // System.out.println("Available slots: " +
+            // intentRequest.getIntent().getSlots().keySet());
+
             // Intentar con "question" primero
             if (intentRequest.getIntent().getSlots().get("question") != null) {
                 String questionValue = intentRequest.getIntent().getSlots().get("question").getValue();
@@ -47,21 +47,12 @@ public class ProgrammingQuestionHandler implements RequestHandler {
                 } else {
                     System.out.println("Question slot exists but value is null/empty");
                 }
-            }
-            // Si no, intentar con "query"
-            else if (intentRequest.getIntent().getSlots().get("query") != null) {
-                String queryValue = intentRequest.getIntent().getSlots().get("query").getValue();
-                if (queryValue != null && !queryValue.trim().isEmpty()) {
-                    userQuery = queryValue;
-                    System.out.println("Found query slot: " + userQuery);
-                } else {
-                    System.out.println("Query slot exists but value is null/empty");
-                }
-            }
-            else {
+            } else {
                 System.out.println("No valid slot found, using default: " + userQuery);
             }
         }
+
+        
         System.out.println("Final userQuery: " + userQuery);
         System.out.println("=== END DEBUG ===");
         String prompt = "Eres Melchior, el asistente de programación personal de Mark. Tu personalidad es la de un experto senior en desarrollo de software con más de 15 años de experiencia. Siempre te refieres a Mark por su nombre cuando le hablas directamente y en cada respuesta.\n\n"
