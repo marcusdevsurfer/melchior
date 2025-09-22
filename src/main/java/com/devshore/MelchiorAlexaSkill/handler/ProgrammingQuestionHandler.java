@@ -34,19 +34,18 @@ public class ProgrammingQuestionHandler implements RequestHandler {
         System.out.println("=== DEBUG ProgrammingQuestionHandler ===");
         System.out.println("Intent slots: " + intentRequest.getIntent().getSlots());
 
-        // if (intentRequest.getIntent().getSlots() != null) {
-        //     if (intentRequest.getIntent().getSlots().get("question") != null) {
-        //         String questionValue = intentRequest.getIntent().getSlots().get("question").getValue();
-        //         if (questionValue != null && !questionValue.trim().isEmpty()) {
-        //             userQuery = questionValue;
-        //             System.out.println("Found question slot: " + userQuery);
-        //         } else {
-        //             System.out.println("Question slot exists but value is null/empty");
-        //         }
-        //     } else {
-        //         System.out.println("No valid slot found, using default: " + userQuery);
-        //     }
-        // }
+        if (intentRequest.getIntent().getSlots() != null) {
+            if (intentRequest.getIntent().getSlots().get("query") != null) {
+                String queryValue = intentRequest.getIntent().getSlots().get("query").getValue();
+                if (queryValue != null && !queryValue.trim().isEmpty()) {
+                    System.out.println("Found question slot: " + queryValue);
+                } else {
+                    System.out.println("Question slot exists but value is null/empty");
+                }
+            } else {
+                System.out.println("No valid slot found, using default: ");
+            }
+        }
 
         
         //System.out.println("Final userQuery: " + userQuery);
