@@ -43,13 +43,13 @@ public class MelchiorAlexaSkill implements RequestHandler {
             return launchRequestHandler.handle(input);
         } else if (programmingQuestionHandler.canHandle(input)) {
             return programmingQuestionHandler.handle(input);
-        } else if (sessionEndedRequestHandler.canHandle(input)) {
-            return sessionEndedRequestHandler.handle(input);
         } else if (cancelAndStopIntentHandler.canHandle(input)) {
             return cancelAndStopIntentHandler.handle(input);
         } else if (helpIntentHandler.canHandle(input)) {
             return helpIntentHandler.handle(input);
-        }
+        }else if (sessionEndedRequestHandler.canHandle(input)) {
+            return sessionEndedRequestHandler.handle(input);
+        } 
         return Optional.empty();
     }
 
